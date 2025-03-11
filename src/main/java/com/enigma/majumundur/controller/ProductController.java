@@ -7,6 +7,7 @@ import com.enigma.majumundur.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,11 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody ProductRequest productRequest){
-        Product createProduct=productService.create(productRequest);
+    @PreAuthorize("hasRole('MERCHANT')")
+    public ResponseEntity<Product> createProduct(@RequestBody ProductRequest productRequest) {
+        Product createProduct = productService.create(productRequest);
         return ResponseEntity.ok(createProduct);
     }
+
     @GetMapping
     public ResponseEntity<Page<Product>> getAllProducts(
             @RequestParam(defaultValue = "1") int page,
@@ -37,6 +41,7 @@ public class ProductController {
     }
 
     @PutMapping(ApiBash.GET_BY_ID)
+    @PreAuthorize("hasRole('MERCHANT')")
     public ResponseEntity<Product> updateProduct(
             @PathVariable String id,
             @RequestBody ProductRequest productRequest
@@ -46,6 +51,7 @@ public class ProductController {
     }
 
     @DeleteMapping(ApiBash.GET_BY_ID)
+    @PreAuthorize("hasRole('MERCHANT')")
     public ResponseEntity<Product> deleteProduct(@PathVariable String id) {
         Product deletedProduct = productService.deleteById(id);
         return ResponseEntity.ok(deletedProduct);

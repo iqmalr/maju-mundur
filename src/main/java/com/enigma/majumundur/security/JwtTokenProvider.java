@@ -15,43 +15,49 @@ public class JwtTokenProvider {
     private String SECRET_KEY;
     @Value("${enigmashop.expiration}")
     private Long EXPIRATION_TIME;
-    public String getUserNameFromToken(String token){
+
+    public String getUserNameFromToken(String token) {
         DecodedJWT decodedJWT = getDecodedJWT(token);
         return decodedJWT.getSubject();
     }
-    public Boolean validateToken(String token){
+
+    public Boolean validateToken(String token) {
         try {
-            DecodedJWT decodedJWT=getDecodedJWT(token);
+            DecodedJWT decodedJWT = getDecodedJWT(token);
             return !decodedJWT.getExpiresAt().before(new Date());
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
-    public String getRoleFromToken(String token){
-        DecodedJWT decodedJWT=getDecodedJWT(token);
-        String role=decodedJWT.getClaim("role").asString();
 
-        if (role.startsWith("[")&&role.endsWith("]")){
-            role=role.substring(1, role.length()-1);
+    public String getRoleFromToken(String token) {
+        DecodedJWT decodedJWT = getDecodedJWT(token);
+        String role = decodedJWT.getClaim("role").asString();
+
+        if (role.startsWith("[") && role.endsWith("]")) {
+            role = role.substring(1, role.length() - 1);
         }
-        System.out.println("DEBUG ROLE : "+role);
+        System.out.println("DEBUG ROLE : " + role);
         return role;
     }
-    public String generateToken(String username, String role){
-        String token=JWT.create()
+
+    public String generateToken(String username, String role) {
+        String token = JWT.create()
                 .withSubject(username)
                 .withClaim("role", role)
-                .withExpiresAt(new Date(System.currentTimeMillis()+ Constant.EXPIRATION_TIME))
+                .withExpiresAt(new Date(System.currentTimeMillis() + Constant.EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(SECRET_KEY));
         return token;
     }
-    public Long getExpirationTime(String token){
-        DecodedJWT decodedJWT=getDecodedJWT(token);
-        Date expirationDate=decodedJWT.getExpiresAt();
-        return expirationDate.getTime()-System.currentTimeMillis();
+
+    public Long getExpirationTime(String token) {
+        DecodedJWT decodedJWT = getDecodedJWT(token);
+        Date expirationDate = decodedJWT.getExpiresAt();
+        return expirationDate.getTime() - System.currentTimeMillis();
     }
-    private DecodedJWT getDecodedJWT(String token){
-        DecodedJWT decodedJWT= JWT.require(Algorithm.HMAC512(SECRET_KEY))
+
+    private DecodedJWT getDecodedJWT(String token) {
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(SECRET_KEY))
                 .build()
                 .verify(token);
         return decodedJWT;

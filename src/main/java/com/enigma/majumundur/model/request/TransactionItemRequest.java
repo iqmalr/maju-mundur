@@ -1,4 +1,5 @@
 package com.enigma.majumundur.model.request;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

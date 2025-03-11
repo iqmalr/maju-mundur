@@ -16,9 +16,10 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserAccountRepository userAccountRepository;
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        UserAccount userAccount = userAccountRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException("User Not Found"));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserAccount userAccount = userAccountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
         return new User(
                 userAccount.getUsername(),
                 userAccount.getPassword(),

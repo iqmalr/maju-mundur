@@ -23,7 +23,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(ApiBash.REGISTER_MERCHANT)
-    public ResponseEntity<CommonResponse<?>> registerMerchant(@RequestBody AuthRequest authRequest){
+    public ResponseEntity<CommonResponse<?>> registerMerchant(@RequestBody AuthRequest authRequest) {
         RegisterResponse registerResponse = authService.createMerchant(authRequest);
         CommonResponse<RegisterResponse> response = CommonResponse.<RegisterResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -32,8 +32,9 @@ public class AuthController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
     @PostMapping(ApiBash.REGISTER_CUSTOMER)
-    public ResponseEntity<CommonResponse<?>> registerCustomer(@RequestBody AuthRequest authRequest){
+    public ResponseEntity<CommonResponse<?>> registerCustomer(@RequestBody AuthRequest authRequest) {
         RegisterResponse registerResponse = authService.createCustomer(authRequest);
         CommonResponse<RegisterResponse> response = CommonResponse.<RegisterResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -42,9 +43,9 @@ public class AuthController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
     @PostMapping(ApiBash.LOGIN)
-//    public ResponseEntity<CommonResponse<?>> loginMerchant(@RequestBody AuthRequest authRequest){
-    public ResponseEntity<CommonResponse<AuthResponse>> loginMerchant(@RequestBody AuthRequest authRequest){
+    public ResponseEntity<CommonResponse<AuthResponse>> loginMerchant(@RequestBody AuthRequest authRequest) {
         AuthResponse authResponse = authService.login(authRequest);
         CommonResponse<AuthResponse> response = CommonResponse.<AuthResponse>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -53,6 +54,7 @@ public class AuthController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
     @PostMapping(ApiBash.LOGOUT)
     public ResponseEntity<CommonResponse<LogoutResponse>> logout(HttpServletRequest httpServletRequest) {
         LogoutResponse logoutResponse = authService.logout(httpServletRequest);
@@ -64,21 +66,4 @@ public class AuthController {
                 .build();
         return ResponseEntity.ok(response);
     }
-//    @GetMapping
-//    public ResponseEntity<Page<UserAccount>> getAllUsers(
-//            @RequestParam(name = "page", defaultValue = "1") Integer page,
-//            @RequestParam(name = "size", defaultValue = "10") Integer size,
-//            @RequestParam(name = "sortBy", defaultValue = "name") String sortBy,
-//            @RequestParam(name = "direction", defaultValue = "asc") String direction,
-//            @RequestParam(name = "name", required = false) String name
-//    ){
-//        SearchUserRequest request = SearchUserRequest.builder()
-//                .page(page)
-//                .size(size)
-//                .sortBy(sortBy)
-//                .direction(direction)
-//                .name(name)
-//                .build();
-//        return ResponseEntity.ok(userService.getAll(request));
-//    }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+
 @Setter
 @Getter
 @Entity
@@ -29,9 +30,10 @@ public class UserAccount implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;
+
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities(){
-        List<UserRole> myRole=List.of(role);
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<UserRole> myRole = List.of(role);
         return myRole.stream().map(userRole -> new SimpleGrantedAuthority(userRole.name())).toList();
     }
 }

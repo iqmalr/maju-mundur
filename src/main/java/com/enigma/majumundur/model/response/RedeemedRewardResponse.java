@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public class RedeemedRewardResponse {
-private String id;
-private String customerId;
-private String rewardId;
-private LocalDateTime redeemedAt;
+    private String id;
+    private String customerId;
+    private String rewardId;
+    private LocalDateTime redeemedAt;
 }

@@ -9,6 +9,7 @@ import com.enigma.majumundur.service.RedeemRewardService;
 import com.enigma.majumundur.service.RewardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class RewardController {
     private final RedeemRewardService redeemRewardService;
 
     @PostMapping
+    @PreAuthorize("hasRole('MERCHANT')")
     public ResponseEntity<RewardResponse> createReward(@RequestBody RewardRequest rewardRequest){
         return ResponseEntity.ok(rewardService.createReward(rewardRequest));
     }
@@ -31,6 +33,7 @@ public class RewardController {
     }
 
     @PostMapping(ApiBash.REDEEM)
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<RedeemedRewardResponse> redeemReward(@RequestBody RedeemRewardRequest redeemRewardRequest){
         return ResponseEntity.ok(redeemRewardService.redeemReward(redeemRewardRequest));
     }

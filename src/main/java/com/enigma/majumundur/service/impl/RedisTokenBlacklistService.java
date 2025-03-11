@@ -10,10 +10,12 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RedisTokenBlacklistService {
     private final StringRedisTemplate stringRedisTemplate;
-    public void blackListToken(String token, Long expirationTime){
+
+    public void blackListToken(String token, Long expirationTime) {
         stringRedisTemplate.opsForValue().set(token, "blacklisted", expirationTime, TimeUnit.MILLISECONDS);
     }
-    public Boolean isTokenBlacklisted(String token){
+
+    public Boolean isTokenBlacklisted(String token) {
         return Boolean.TRUE.equals(stringRedisTemplate.hasKey(token));
     }
 }

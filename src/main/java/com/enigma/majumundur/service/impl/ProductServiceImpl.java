@@ -18,18 +18,20 @@ import org.springframework.stereotype.Service;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final UserAccountRepository userAccountRepository;
+
     @Override
-    public Product create(ProductRequest productRequest){
-        UserAccount merchant = userAccountRepository.findById(productRequest.getMerchantId()).orElseThrow(()->new RuntimeException("Merchant not found"));
-    Product product = Product.builder()
-            .merchant(merchant)
-            .name(productRequest.getName())
-            .description(productRequest.getDescription())
-            .price(productRequest.getPrice())
-            .stock(productRequest.getStock())
-            .build();
+    public Product create(ProductRequest productRequest) {
+        UserAccount merchant = userAccountRepository.findById(productRequest.getMerchantId()).orElseThrow(() -> new RuntimeException("Merchant not found"));
+        Product product = Product.builder()
+                .merchant(merchant)
+                .name(productRequest.getName())
+                .description(productRequest.getDescription())
+                .price(productRequest.getPrice())
+                .stock(productRequest.getStock())
+                .build();
         return productRepository.saveAndFlush(product);
     }
+
     @Override
     public Page<Product> getAll(int page, int size, String sortBy, String direction) {
         if (page <= 0) page = 1;

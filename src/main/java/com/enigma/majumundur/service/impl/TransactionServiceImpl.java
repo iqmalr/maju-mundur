@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final UserAccountRepository userAccountRepository;
-    private final ProductRepository productRepository;
     private final RewardPointRepository rewardPointRepository;
 
     @Transactional
@@ -58,6 +57,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
 
     }
+
     private void addRewardPoints(UserAccount customer, BigDecimal totalPrice) {
         int earnedPoints = totalPrice.divide(new BigDecimal("10000.00")).intValue();
 
@@ -71,10 +71,11 @@ public class TransactionServiceImpl implements TransactionService {
         rewardPoint.setPoints(rewardPoint.getPoints() + earnedPoints);
         rewardPointRepository.save(rewardPoint);
     }
+
     @Override
-    public TransactionResponse getTransactionById(String id){
+    public TransactionResponse getTransactionById(String id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("Transaction not found"));
+                .orElseThrow(() -> new RuntimeException("Transaction not found"));
         List<TransactionItemResponse> items = transaction.getTransactionItems().stream()
                 .map(item -> new TransactionItemResponse(
                         item.getProduct().getId(),

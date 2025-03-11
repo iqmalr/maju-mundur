@@ -28,6 +28,7 @@ public class RewardServiceImpl implements RewardService {
                 .name(savedReward.getName())
                 .pointsRequired(savedReward.getPointsRequired()).build();
     }
+
     @Override
     public List<RewardResponse> getAllRewards() {
         return rewardRepository.findAll().stream()

@@ -1,4 +1,5 @@
 package com.enigma.majumundur.model.response;
+
 import lombok.*;
 
 import java.math.BigDecimal;

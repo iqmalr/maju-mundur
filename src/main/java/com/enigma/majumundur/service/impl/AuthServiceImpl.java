@@ -33,61 +33,65 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public RegisterResponse createMerchant(AuthRequest authRequest){
+    public RegisterResponse createMerchant(AuthRequest authRequest) {
         try {
             UserRole userRole = UserRole.ROLE_MERCHANT;
-            UserAccount userAccount=UserAccount.builder()
+            UserAccount userAccount = UserAccount.builder()
                     .username(authRequest.getUsername())
                     .password(passwordEncoder.encode(authRequest.getPassword()))
                     .role(userRole)
                     .build();
             userAccountRepository.saveAndFlush(userAccount);
             return toRegisterResponse(userAccount);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, Constant.USERNAME_DUPLICATE);
         }
     }
+
     @Override
-    public RegisterResponse createCustomer(AuthRequest authRequest){
+    public RegisterResponse createCustomer(AuthRequest authRequest) {
         try {
             UserRole userRole = UserRole.ROLE_CUSTOMER;
-            UserAccount userAccount=UserAccount.builder()
+            UserAccount userAccount = UserAccount.builder()
                     .username(authRequest.getUsername())
                     .password(passwordEncoder.encode(authRequest.getPassword()))
                     .role(userRole)
                     .build();
             userAccountRepository.saveAndFlush(userAccount);
             return toRegisterResponse(userAccount);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, Constant.USERNAME_DUPLICATE);
         }
     }
+
     @Override
-    public AuthResponse login(AuthRequest authRequest){
-        Authentication authentication=authenticationManager.authenticate(
+    public AuthResponse login(AuthRequest authRequest) {
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
         );
-        User user=(User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
         String token = jwtTokenProvider.generateToken(user.getUsername(), user.getAuthorities().toString());
         return AuthResponse.builder()
                 .accessToken(token)
                 .role(user.getAuthorities().toString())
                 .build();
     }
-    private static RegisterResponse toRegisterResponse(UserAccount userAccount){
+
+    private static RegisterResponse toRegisterResponse(UserAccount userAccount) {
         return RegisterResponse.builder()
                 .id(userAccount.getId())
                 .username(userAccount.getUsername())
                 .role(userAccount.getRole().getDescription())
                 .build();
     }
+
     @Override
-    public LogoutResponse logout(HttpServletRequest httpServletRequest){
-        String token=jwtAuthenticationFilter.extractTokenFromRequest(httpServletRequest);
-        if (token==null||!jwtTokenProvider.validateToken(token)){
+    public LogoutResponse logout(HttpServletRequest httpServletRequest) {
+        String token = jwtAuthenticationFilter.extractTokenFromRequest(httpServletRequest);
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token");
         }
-        Long expirationTime= jwtTokenProvider.getExpirationTime(token);
+        Long expirationTime = jwtTokenProvider.getExpirationTime(token);
         redisTokenBlacklistService.blackListToken(token, expirationTime);
         return LogoutResponse.builder()
                 .message("Token successfully blacklisted")
